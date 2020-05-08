@@ -1,0 +1,44 @@
+name: Build App
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.0      
+      with:
+        vs-version: 16.5
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+
+    - name: Restore NuGet Packages
+      run: nuget restore YandexDiskSync.sln
+
+    - name: Set credentials
+      run: (Get-Content YandexDiskSync\Credentials.cs) -replace '{ID}','${{ secrets.YANDEX_ID }}' -replace '{SECRET}','${{ secrets.YANDEX_SECRET }}'|Set-Content YandexDiskSync\Credentials.cs
+
+    - name: Build app
+      run: msbuild YandexDiskSync.sln /p:Configuration=Release
+
+    - name: Compile and Pack
+      run: |
+        Deps\KeePass.exe --plgx-create YandexDiskSync\bin\Release\
+        Compress-Archive YandexDiskSync.plgx YandexDiskSync.zip
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: YandexDiskSync.plgx
