@@ -6,7 +6,7 @@ KeePass plugin used to syncronize your password database with Yandex.Disk storag
 
 ## License
 [The MIT License](http://opensource.org/licenses/MIT)
-Copyright (c) 2015-2020 Ivan Zakharchanka
+Copyright (c) 2015-present Ivan Zakharchanka
 
 [github-url]: https://github.com/3axap4eHko/YandexDiskSync/actions
 [github-image]: https://github.com/3axap4eHko/YandexDiskSync/workflows/Build%20App/badge.svg
